@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Chart.Name }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ .Chart.Name }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Chart.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Chart.Name }}
+    spec:
+      imagePullSecrets:
+      - name: regcred
+      containers:
+      - name: {{ .Chart.Name }}
+        image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+        env:
+          - name: REDIS_HOST
+            value: {{ .Values.redis.host }}
+          - name: REDIS_PASSWORD
+            value: {{ .Values.redis.password }}
+          - name: INRIX_STREAM
+            value: {{ .Values.inrix.stream}}
+          - name: RAPTOR_API_KEY
+            valueFrom:
+              secretKeyRef:
+                name: raptor-api-key
+                key: apiKey
+          - name: INRIX_DATASET_SYSTEM_NAME
+            value: {{ .Values.inrix.systemName }}

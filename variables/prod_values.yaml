@@ -1,0 +1,7 @@
+inrix:
+    systemName: 'inrix__traffic_speed_data_real_time'
+    stream: 'wss://streams.smartcolumbusos.com/socket/websocket'
+
+ingress:
+    annotations:
+        alb.ingress.kubernetes.io/scheme: 'internet-facing'
